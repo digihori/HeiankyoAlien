@@ -1,0 +1,4 @@
+<!-- res/values/dimens.xml -->
+<resources>
+    <dimen name="life_icon_size">32dp</dimen>
+</resources>

@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">HeiankoAlien</string>
+    <string name="about_title">平安京 エイリアン</string>
+    <string name="about_message">
+        1970年代の電子ゲーム「平安京エイリアン」をAndroidスマートフォン向けに再現したゲームです\n
+        かなりアレンジしていますが（笑）\n
+        特徴\n
+        - 格子状のフィールドでエイリアンをうまく誘導し穴に埋めることで撃退します\n
+        - プレイヤーの向いている方向に対して穴掘り穴埋めができます\n
+        - エイリアンのプレイヤーに対する指向性はステージが進むにつれて上がっていきます\n
+        - 穴は２つまでの制限あり\n
+        - 一定時間過ぎるとエイリアンの動きが速くなります\n
+        - 懐かしの7セグメント風スコア表示\n
+        - ゲームパッド対応\n
+        - 効果音あり\n
+    </string>
+    <string name="about_ok">OK</string>
+    <string name="about_hyperlink_name">プライバシーポリシー</string>
+    <string name="about_hyperlink">https://github.com/digihori/HeiankyoAlien/blob/main/PRIVACY.ja.md</string>
+</resources>
