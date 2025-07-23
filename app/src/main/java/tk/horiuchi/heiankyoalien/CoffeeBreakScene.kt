@@ -86,6 +86,11 @@ class CoffeeBreakScene(
         }
 
         mediaPlayer = null
+
+        if (!isFinished) {
+            isFinished = true
+            onFinished.invoke()
+        }
     }
 
     fun draw(canvas: Canvas, paint: Paint, screenWidth: Int, tileSize: Int) {

@@ -73,7 +73,8 @@ class Player(
 
         paint.style = Paint.Style.FILL
         paint.strokeWidth = 4f
-        paint.color = if (state == State.DIGGING) Color.BLUE else Color.GRAY
+        //paint.color = if (state == State.DIGGING) Color.BLUE else Color.GRAY
+        paint.color = Color.GRAY
         canvas.drawCircle(centerX, centerY, radius, paint)
     }
 
@@ -194,6 +195,7 @@ class Player(
     }
 
     fun resetDugHoles() {
+        state = State.NORMAL
         dugHoles.clear()
     }
 }

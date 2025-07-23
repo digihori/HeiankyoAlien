@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
+import androidx.lifecycle.Lifecycle
 import kotlin.math.min
 
 class GameView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
@@ -126,10 +127,8 @@ class GameView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
             enemies.add(e)
         }
 
-        //postDelayed({
-            val t = SystemClock.elapsedRealtime()
-            enemies.forEach { it.start(t) }
-        //}, 1000)
+        val t = SystemClock.elapsedRealtime()
+        enemies.forEach { it.start(t) }
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -204,6 +203,7 @@ class GameView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
             for (enemy in gameMap.enemies) {
                 if (enemy.moveInterval > 500L) {
                     enemy.moveInterval = 500L
+                    soundManager.play(SoundManager.SoundEffect.SPD)
                 }
             }
         }
@@ -295,7 +295,8 @@ class GameView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
 
                 paint.style = Paint.Style.FILL
                 paint.color = when (tile) {
-                    TileType.WALL -> Color.DKGRAY
+                    //TileType.WALL -> Color.DKGRAY
+                    TileType.WALL -> Color.rgb(0, 70, 0)
                     TileType.PATH, TileType.CROSS, TileType.HOLE -> Color.WHITE
                     TileType.FILLED -> Color.GRAY
                 }
@@ -305,7 +306,7 @@ class GameView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
                 // 穴だけ特殊描画
                 if (tile == TileType.HOLE && !(player.state == Player.State.FILLING && x == player.targetX && y == player.targetY)) {
                     paint.style = Paint.Style.FILL
-                    paint.color = Color.BLUE
+                    paint.color = Color.GRAY
                     canvas.drawCircle(cx, cy, radius, paint)
                 }
             }
@@ -331,7 +332,7 @@ class GameView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
                 if (radius > 0f) {
                     paint.style = Paint.Style.STROKE
                     paint.strokeWidth = 6f
-                    paint.color = Color.BLUE
+                    paint.color = Color.GRAY
                     canvas.drawCircle(cx, cy, radius, paint)
                 }
             }
@@ -433,7 +434,7 @@ class GameView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (player.isBusy()) return true
+        if (!isGameOver && player.isBusy()) return true
         when (keyCode) {
             KeyEvent.KEYCODE_DPAD_UP -> move(Direction.UP)
             KeyEvent.KEYCODE_DPAD_DOWN -> move(Direction.DOWN)
@@ -514,5 +515,10 @@ class GameView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
 
     private fun isGamePaused(): Boolean {
         return pauseCounter > 0
+    }
+
+    fun forceStopCoffeeBreak() {
+        coffeeBreakScene?.stop()  // BGMを止める・Handlerを止めるなど
+        coffeeBreakScene = null
     }
 }

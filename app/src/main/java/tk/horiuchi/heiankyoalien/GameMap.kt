@@ -74,30 +74,7 @@ class GameMap {
         return tiles[y][x] == TileType.WALL
     }
 
-    //fun reset() {
-    //    for (y in 0 until height) {
-    //        for (x in 0 until width) {
-    //            tiles[y][x] = baseMap[y][x]
-    //        }
-    //    }
-    //}
     fun reset() {
-        /*
-        for (y in tiles.indices) {
-            for (x in tiles[y].indices) {
-                when (tiles[y][x]) {
-                    TileType.HOLE, TileType.FILLED -> {
-                        // 穴や埋まった穴は交差点に戻す
-                        tiles[y][x] = if (x % 2 == 1 && y % 2 == 1) TileType.CROSS else TileType.PATH
-                    }
-                    else -> {
-                        // それ以外（WALL、PATH、CROSS）はそのまま
-                    }
-                }
-            }
-        }
-
-         */
         for (y in 0 until height) {
             for (x in 0 until width) {
                 tiles[y][x] = baseTiles[y][x]  // ← 完全に元に戻す

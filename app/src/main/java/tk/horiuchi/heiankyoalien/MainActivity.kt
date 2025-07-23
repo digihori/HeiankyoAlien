@@ -113,6 +113,7 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.action_about -> {
                 gameView.pauseGame()
+                gameView.forceStopCoffeeBreak()
                 showAboutDialog()
                 true
             }
@@ -160,6 +161,7 @@ class MainActivity : AppCompatActivity() {
                 val url = getString(R.string.about_hyperlink)
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                 startActivity(intent)
+                gameView.resumeGame()
             }
             .setOnCancelListener {
                 gameView.resumeGame()  // ★ 戻るボタンなどでもゲームを再開
@@ -177,6 +179,7 @@ class MainActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         gameView.pauseGame()
+        gameView.forceStopCoffeeBreak()
     }
 
     override fun onResume() {

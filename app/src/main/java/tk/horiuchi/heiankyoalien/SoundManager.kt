@@ -10,7 +10,7 @@ class SoundManager(context: Context) {
     private var playingStreamId: Int = 0
 
     enum class SoundEffect {
-        CLEAR, DEAD, DIG, FILL, FALL, HIT, OVER
+        CLEAR, DEAD, DIG, FILL, FALL, HIT, SPD, OVER
     }
 
     init {
@@ -30,6 +30,7 @@ class SoundManager(context: Context) {
         soundMap[SoundEffect.DIG] = soundPool.load(context, R.raw.se_player_dig, 1)
         soundMap[SoundEffect.FILL] = soundPool.load(context, R.raw.se_player_fill, 1)
         soundMap[SoundEffect.FALL] = soundPool.load(context, R.raw.se_enemy_fall, 1)
+        soundMap[SoundEffect.SPD] = soundPool.load(context, R.raw.se_enemy_speedup, 1)
         soundMap[SoundEffect.HIT] = soundPool.load(context, R.raw.se_enemy_hit, 1)
         soundMap[SoundEffect.OVER] = soundPool.load(context, R.raw.se_gameover, 1)
     }
