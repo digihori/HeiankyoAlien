@@ -1,7 +1,7 @@
 # Heiankyo Alien
 [Click here for Japanese](./README.ja.md)
 
-A retro-style race  game that recreates the 1970s electronic game “Heiankyo Alien” for Android smartphones.
+This game is a reproduction of the 1970s electronic game “Heiankyo Alien” for Android smartphones.
 It is quite rearranged (^^) 
 
 ## Features
