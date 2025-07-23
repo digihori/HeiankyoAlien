@@ -21,6 +21,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- ⭐ デバッグ用アクティビティを追加 -->
+        <activity
+            android:name=".DebugCoffeeBreakActivity"
+            android:exported="true"/>
     </application>
 
 </manifest>

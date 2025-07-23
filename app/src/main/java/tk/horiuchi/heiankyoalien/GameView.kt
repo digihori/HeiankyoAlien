@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.*
 import android.os.SystemClock
 import android.util.AttributeSet
+import android.util.Log
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
@@ -20,11 +21,7 @@ class GameView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
 
     private lateinit var soundManager: SoundManager
 
-    //private val player = Player(context, gameMap, enemies, scoreManager, soundManager)
     private lateinit var player: Player
-
-    //private var startTime = SystemClock.elapsedRealtime()
-    //private var currentTime = startTime
 
     private var stage = 1
     private var score = 0
@@ -38,6 +35,11 @@ class GameView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
     private var pauseCounter = 0
 
     private val paint = Paint()
+
+    private var coffeeBreakScene: CoffeeBreakScene? = null
+    private var isCoffeeBreak = false
+
+    private var debug_text = ""
 
 
     init {
@@ -53,6 +55,7 @@ class GameView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
         soundManager.release() // ★リソース解放
     }
 
+    var screenWidth: Int = 0
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
 
@@ -61,6 +64,7 @@ class GameView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
         val visibleTilesY = 7
 
         tileSize = minOf(w / visibleTilesX, h / visibleTilesY)
+        screenWidth = w
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -83,6 +87,10 @@ class GameView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
         stageStartTime = SystemClock.elapsedRealtime()
         player.resetDugHoles()
         soundManager.stopCurrent()
+
+        isStageClearing = false
+        stageClearStartTime = 0L
+        stageClearDetectedTime = 0L
 
         for (enemy in gameMap.enemies) {
             enemy.moveInterval = 1000L  // ステージ開始時に速度リセット
@@ -118,10 +126,10 @@ class GameView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
             enemies.add(e)
         }
 
-        postDelayed({
+        //postDelayed({
             val t = SystemClock.elapsedRealtime()
             enemies.forEach { it.start(t) }
-        }, 1000)
+        //}, 1000)
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -130,6 +138,14 @@ class GameView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
             postInvalidateDelayed(16L)
             return
         }
+
+        if (isCoffeeBreak) {
+            coffeeBreakScene?.draw(canvas, paint, screenWidth, tileSize)
+            //coffeeBreakScene?.update()
+            postInvalidateDelayed(16L)
+            return
+        }
+
         val now = SystemClock.elapsedRealtime()
         updateGame(now)
 
@@ -224,12 +240,43 @@ class GameView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
         if (isStageClearing) {
             val elapsed = time - stageClearStartTime
             if (elapsed > 2000L) {
-                stage++
-                startStage(stage)
-                statusUpdateListener?.invoke(stage, lives)
                 isStageClearing = false
+
+                // 2面クリア後 → コーヒーブレイクへ
+                if (stage == 2) {
+                    isCoffeeBreak = true
+                    //coffeeBreakScene = CoffeeBreakScene(context) {
+                    coffeeBreakScene = CoffeeBreakScene(
+                        context = context,
+                        onFinished = {
+                            Log.d("GameView", "CoffeeBreak finished, starting next stage...")
+                            // 寸劇終了後に次のステージへ
+                            stage++
+                            isCoffeeBreak = false
+                            coffeeBreakScene = null
+
+                            startStage(stage)
+                            isStageClearing = false
+                            stageClearDetectedTime = 0L
+                            stageClearStartTime = 0L
+
+                            statusUpdateListener?.invoke(stage, lives)
+                        },
+                        scaleFactor = 1.0f,
+                        frameInterval = 100L
+                    )
+                    coffeeBreakScene?.start(tileSize, screenWidth)
+
+                } else {
+                    stage++
+                    startStage(stage)
+                    statusUpdateListener?.invoke(stage, lives)
+                }
             }
         }
+
+        // デバッグ用
+        //Log.d("GameView", "updateGame(): stage=$stage isStageClearing=$isStageClearing, enemies=${enemies.size}, allDead=${enemies.all { it.state == Enemy.State.DEAD }}")
     }
 
     private fun drawField(canvas: Canvas) {
@@ -363,6 +410,7 @@ class GameView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
 
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (isCoffeeBreak) return true
         if (event.action == MotionEvent.ACTION_DOWN) {
             if (isGameOver) {
                 // タップでリスタート
@@ -371,6 +419,7 @@ class GameView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
                 stage = 1
                 scoreManager.reset()
                 startStage(stage)
+                statusUpdateListener?.invoke(stage, lives)
             } else {
                 val now = SystemClock.elapsedRealtime()
                 if (gameMap.tiles[player.y][player.x] == TileType.HOLE) {
@@ -391,18 +440,22 @@ class GameView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
             KeyEvent.KEYCODE_DPAD_LEFT -> move(Direction.LEFT)
             KeyEvent.KEYCODE_DPAD_RIGHT -> move(Direction.RIGHT)
             KeyEvent.KEYCODE_BUTTON_A, KeyEvent.KEYCODE_DPAD_CENTER,
+            KeyEvent.KEYCODE_BUTTON_X, KeyEvent.KEYCODE_SPACE,
+            KeyEvent.KEYCODE_BUTTON_1, KeyEvent.KEYCODE_BUTTON_2, KeyEvent.KEYCODE_BUTTON_3,
             KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_BUTTON_START -> act()
         }
+        debug_text = String.format("%x", keyCode)
         return true
     }
 
     fun move(direction: Direction) {
-        if (!player.isBusy() && !isGameOver && !player.isBlinking) {
+        if (!isCoffeeBreak && !player.isBusy() && !isGameOver && !player.isBlinking) {
             player.tryMove(direction)
         }
     }
 
     fun act() {
+        if (isCoffeeBreak) return
         if (isGameOver) {
             // Aボタン or 穴掘りボタンで再スタート
             isGameOver = false
@@ -410,6 +463,8 @@ class GameView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
             stage = 1
             scoreManager.reset()
             startStage(stage)
+            statusUpdateListener?.invoke(stage, lives)
+            invalidate()
             return
         }
         if (!player.isBusy() && !player.isBlinking) {
@@ -439,6 +494,13 @@ class GameView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
     fun setStatusUpdateListener(listener: (stage: Int, lives: Int) -> Unit) {
         statusUpdateListener = listener
         listener.invoke(stage, lives) // 初期通知
+    }
+
+    private var debugTextListener: ((String) -> Unit)? = null
+
+    fun setDebugTextListener(listener: (String) -> Unit) {
+        debugTextListener = listener
+        listener.invoke(debug_text)
     }
 
     fun pauseGame() {

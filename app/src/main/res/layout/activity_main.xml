@@ -77,19 +77,32 @@
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp">
 
-            <TextView
-                android:id="@+id/stageText"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="STAGE: 1"
-                android:textColor="#FFFFFF"
-                android:textSize="20sp"
-                android:layout_weight="1" />
+                android:orientation="vertical"
+                android:layout_weight="1">
+                <TextView
+                    android:id="@+id/stageText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="STAGE: 1"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp" />
+                <TextView
+                    android:id="@+id/debugText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/livesLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="top"
                 android:orientation="horizontal" />
         </LinearLayout>
     </LinearLayout>

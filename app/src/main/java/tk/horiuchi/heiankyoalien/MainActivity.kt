@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -26,7 +27,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var segBitmaps: List<Bitmap>
     private lateinit var stageText: TextView
     private lateinit var livesLayout: LinearLayout
-
+    private lateinit var debugText: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,12 +72,16 @@ class MainActivity : AppCompatActivity() {
         }
 
         stageText = findViewById(R.id.stageText)
+        debugText = findViewById(R.id.debugText)
         livesLayout = findViewById(R.id.livesLayout)
 
         // GameViewからステージやライフを通知してもらう
         gameView.setStatusUpdateListener { stage, lives ->
             stageText.text = "STAGE: $stage"
             updateLivesDisplay(lives)
+        }
+        gameView.setDebugTextListener { text ->
+            debugText.text = "$text"
         }
 
         findViewById<ImageButton>(R.id.btn_left).setOnClickListener {
@@ -131,7 +136,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateLivesDisplay(lives: Int) {
         livesLayout.removeAllViews()
-        repeat(lives) {
+        repeat(lives - 1) {
             val img = ImageView(this)
             img.setImageResource(R.drawable.player_down)
             val size = resources.getDimensionPixelSize(R.dimen.life_icon_size)
@@ -160,6 +165,13 @@ class MainActivity : AppCompatActivity() {
                 gameView.resumeGame()  // ★ 戻るボタンなどでもゲームを再開
             }
             .show()
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        if (event.repeatCount == 0) {
+            return gameView.onKeyDown(keyCode, event)
+        }
+        return super.onKeyDown(keyCode, event)
     }
 
     override fun onPause() {
