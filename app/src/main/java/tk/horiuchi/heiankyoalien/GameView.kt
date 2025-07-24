@@ -40,7 +40,7 @@ class GameView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
     private var coffeeBreakScene: CoffeeBreakScene? = null
     private var isCoffeeBreak = false
 
-    private var debug_text = ""
+    //private var debug_text = ""
 
 
     init {
@@ -75,6 +75,8 @@ class GameView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
         val availableHeight = MeasureSpec.getSize(heightMeasureSpec)
 
         tileSize = min(availableWidth, availableHeight) / visibleTiles
+        // 横幅基準でtileSizeを決定
+        //tileSize = availableWidth / visibleTiles
 
         val desiredSize = tileSize * visibleTiles
         setMeasuredDimension(desiredSize, desiredSize)
@@ -445,7 +447,7 @@ class GameView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
             KeyEvent.KEYCODE_BUTTON_1, KeyEvent.KEYCODE_BUTTON_2, KeyEvent.KEYCODE_BUTTON_3,
             KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_BUTTON_START -> act()
         }
-        debug_text = String.format("%x", keyCode)
+        //debug_text = String.format("%x", keyCode)
         return true
     }
 
@@ -499,10 +501,10 @@ class GameView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
 
     private var debugTextListener: ((String) -> Unit)? = null
 
-    fun setDebugTextListener(listener: (String) -> Unit) {
-        debugTextListener = listener
-        listener.invoke(debug_text)
-    }
+    //fun setDebugTextListener(listener: (String) -> Unit) {
+    //    debugTextListener = listener
+    //    listener.invoke(debug_text)
+    //}
 
     fun pauseGame() {
         soundManager.stopCurrent()

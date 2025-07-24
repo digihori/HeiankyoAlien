@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var segBitmaps: List<Bitmap>
     private lateinit var stageText: TextView
     private lateinit var livesLayout: LinearLayout
-    private lateinit var debugText: TextView
+    //private lateinit var debugText: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         stageText = findViewById(R.id.stageText)
-        debugText = findViewById(R.id.debugText)
+        //debugText = findViewById(R.id.debugText)
         livesLayout = findViewById(R.id.livesLayout)
 
         // GameViewからステージやライフを通知してもらう
@@ -80,9 +80,9 @@ class MainActivity : AppCompatActivity() {
             stageText.text = "STAGE: $stage"
             updateLivesDisplay(lives)
         }
-        gameView.setDebugTextListener { text ->
-            debugText.text = "$text"
-        }
+        //gameView.setDebugTextListener { text ->
+        //    debugText.text = "$text"
+        //}
 
         findViewById<ImageButton>(R.id.btn_left).setOnClickListener {
             gameView.move(Direction.LEFT)

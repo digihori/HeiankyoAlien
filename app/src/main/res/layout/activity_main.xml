@@ -1,170 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000">
 
+    <!-- ツールバー -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/black"
+        app:title="Heiankyo Alien"
+        app:titleTextColor="@android:color/white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- スコア表示 -->
     <LinearLayout
-        android:id="@+id/mainLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_above="@+id/buttonLayout">
+        android:id="@+id/scoreLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@android:color/black"
-            app:title="Heiankyo Alien"
-            app:titleTextColor="@android:color/white" />
+        <ImageView android:id="@+id/seg1" android:layout_width="48dp" android:layout_height="72dp" android:layout_margin="2dp" />
+        <ImageView android:id="@+id/seg2" android:layout_width="48dp" android:layout_height="72dp" android:layout_margin="2dp" />
+        <ImageView android:id="@+id/seg3" android:layout_width="48dp" android:layout_height="72dp" android:layout_margin="2dp" />
+        <ImageView android:id="@+id/seg4" android:layout_width="48dp" android:layout_height="72dp" android:layout_margin="2dp" />
+    </LinearLayout>
 
-        <!-- スコア表示 -->
-        <LinearLayout
-            android:id="@+id/scoreLayout"
-            android:layout_width="match_parent"
+    <!-- GameView：縦横の小さい方に合わせて中央に正方形で表示 -->
+    <tk.horiuchi.heiankyoalien.GameView
+        android:id="@+id/gameView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/scoreLayout"
+        app:layout_constraintBottom_toTopOf="@id/statusLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"
+        app:layout_constraintDimensionRatio="1:1"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:clickable="false" />
+
+    <!-- ステータス表示 -->
+    <LinearLayout
+        android:id="@+id/statusLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toBottomOf="@id/gameView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/stageText"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="8dp"
-            android:gravity="center"
-            android:layout_marginBottom="24dp">
-
-            <ImageView
-                android:id="@+id/seg1"
-                android:layout_width="48dp"
-                android:layout_height="72dp"
-                android:layout_margin="2dp" />
-
-            <ImageView
-                android:id="@+id/seg2"
-                android:layout_width="48dp"
-                android:layout_height="72dp"
-                android:layout_margin="2dp" />
-
-            <ImageView
-                android:id="@+id/seg3"
-                android:layout_width="48dp"
-                android:layout_height="72dp"
-                android:layout_margin="2dp" />
-
-            <ImageView
-                android:id="@+id/seg4"
-                android:layout_width="48dp"
-                android:layout_height="72dp"
-                android:layout_margin="2dp" />
-        </LinearLayout>
-
-        <!-- ゲームビュー -->
-        <tk.horiuchi.heiankyoalien.GameView
-            android:id="@+id/gameView"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
             android:layout_weight="1"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:clickable="false"/>
+            android:text="STAGE: 1"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp" />
 
-        <!-- 状態表示エリア -->
         <LinearLayout
-            android:id="@+id/statusLayout"
-            android:layout_width="match_parent"
+            android:id="@+id/livesLayout"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="8dp"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="1">
-                <TextView
-                    android:id="@+id/stageText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="STAGE: 1"
-                    android:textColor="#FFFFFF"
-                    android:textSize="20sp" />
-                <TextView
-                    android:id="@+id/debugText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:textColor="#FFFFFF"
-                    android:textSize="20sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/livesLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="top"
-                android:orientation="horizontal" />
-        </LinearLayout>
+            android:gravity="right"
+            android:orientation="horizontal" />
     </LinearLayout>
 
     <!-- 操作ボタン -->
     <LinearLayout
         android:id="@+id/buttonLayout"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="8dp">
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <ImageButton
-            android:id="@+id/btn_act"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_margin="8dp"
-            android:background="@drawable/btn_act"
-            android:focusable="false"
-            android:focusableInTouchMode="false"/>
+        <ImageButton android:id="@+id/btn_act" android:layout_width="64dp" android:layout_height="64dp" android:layout_margin="8dp" android:background="@drawable/btn_act" android:focusable="false" android:focusableInTouchMode="false" />
+        <ImageButton android:id="@+id/btn_left" android:layout_width="64dp" android:layout_height="64dp" android:layout_margin="8dp" android:background="@drawable/btn_left" android:focusable="false" android:focusableInTouchMode="false" />
 
-        <ImageButton
-            android:id="@+id/btn_left"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_margin="8dp"
-            android:background="@drawable/btn_left"
-            android:focusable="false"
-            android:focusableInTouchMode="false"/>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <ImageButton
-                android:id="@+id/btn_up"
-                android:layout_width="64dp"
-                android:layout_height="48dp"
-                android:layout_margin="8dp"
-                android:background="@drawable/btn_up"
-                android:focusable="false"
-                android:focusableInTouchMode="false"/>
-            <ImageButton
-                android:id="@+id/btn_down"
-                android:layout_width="64dp"
-                android:layout_height="48dp"
-                android:layout_margin="8dp"
-                android:background="@drawable/btn_down"
-                android:focusable="false"
-                android:focusableInTouchMode="false"/>
+        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical">
+            <ImageButton android:id="@+id/btn_up" android:layout_width="64dp" android:layout_height="48dp" android:layout_margin="8dp" android:background="@drawable/btn_up" android:focusable="false" android:focusableInTouchMode="false" />
+            <ImageButton android:id="@+id/btn_down" android:layout_width="64dp" android:layout_height="48dp" android:layout_margin="8dp" android:background="@drawable/btn_down" android:focusable="false" android:focusableInTouchMode="false" />
         </LinearLayout>
 
-        <ImageButton
-            android:id="@+id/btn_right"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_margin="8dp"
-            android:background="@drawable/btn_right"
-            android:focusable="false"
-            android:focusableInTouchMode="false"/>
+        <ImageButton android:id="@+id/btn_right" android:layout_width="64dp" android:layout_height="64dp" android:layout_margin="8dp" android:background="@drawable/btn_right" android:focusable="false" android:focusableInTouchMode="false" />
     </LinearLayout>
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
